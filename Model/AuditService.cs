@@ -122,6 +122,66 @@ public class AuditService
 
         return changes;
     }
+
+    public async Task LogAsync(string action, string entity, object newData, object? oldData = null)
+    {
+        var userEmail = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.Email)?.Value ?? "Unknown";
+
+        Dictionary<string, object> changes = new();
+
+        if (action == "Update" && oldData != null)
+        {
+            var newProps = newData.GetType().GetProperties();
+            foreach (var prop in newProps)
+            {
+                var newValue = prop.GetValue(newData);
+                var oldValue = prop.GetValue(oldData);
+
+                if ((oldValue == null && newValue != null) || (oldValue != null && !oldValue.Equals(newValue)))
+                {
+                    changes[prop.Name] = new { Old = oldValue, New = newValue };
+                }
+            }
+        }
+        else
+        {
+            // For other actions, store full data
+            changes["Data"] = newData;
+        }
+
+        // Avoid saving if there are no changes
+        if (changes.Count == 0) return;
+
+        var log = new AuditLog
+        {
+            UserEmail = userEmail,
+            Action = action,
+            Entity = entity,
+            Changes = JsonSerializer.Serialize(changes, new JsonSerializerOptions { WriteIndented = true }),
+            Timestamp = DateTime.UtcNow
+        };
+
+        _context.AuditLogs.Add(log);
+        await _context.SaveChangesAsync();
+    }
+    public async Task LogAsync(string action, string entity, object? data = null)
+    {
+        var userEmail = _httpContextAccessor.HttpContext?.User?.Identity?.Name ?? "Unknown";
+
+        var auditLog = new AuditLog
+        {
+            UserEmail = userEmail,
+            Action = action,
+            Entity = entity,
+            Timestamp = DateTime.UtcNow,
+            Changes = JsonSerializer.Serialize(data, new JsonSerializerOptions { WriteIndented = true })
+        };
+
+        _context.AuditLogs.Add(auditLog);
+        await _context.SaveChangesAsync();
+    }
+
+
 }
 
 /// <summary>

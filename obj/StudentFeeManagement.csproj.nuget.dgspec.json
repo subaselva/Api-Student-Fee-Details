@@ -51,9 +51,29 @@
         "net9.0": {
           "targetAlias": "net9.0",
           "dependencies": {
+            "Azure.Storage.Blobs": {
+              "target": "Package",
+              "version": "[12.24.0, )"
+            },
+            "ClosedXML": {
+              "target": "Package",
+              "version": "[0.104.2, )"
+            },
             "EPPlus": {
               "target": "Package",
               "version": "[8.0.1, )"
+            },
+            "Hangfire": {
+              "target": "Package",
+              "version": "[1.8.18, )"
+            },
+            "Hangfire.SqlServer": {
+              "target": "Package",
+              "version": "[1.8.18, )"
+            },
+            "IronXL.Excel": {
+              "target": "Package",
+              "version": "[2025.4.5, )"
             },
             "Microsoft.AspNetCore.Authentication.JwtBearer": {
               "target": "Package",
@@ -74,6 +94,10 @@
             "Microsoft.AspNetCore.OpenApi": {
               "target": "Package",
               "version": "[9.0.0, )"
+            },
+            "Microsoft.Data.SqlClient": {
+              "target": "Package",
+              "version": "[6.0.1, )"
             },
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",
@@ -103,7 +127,15 @@
               "target": "Package",
               "version": "[7.2.0, )"
             },
+            "System.Data.SqlClient": {
+              "target": "Package",
+              "version": "[4.9.0, )"
+            },
             "itext7": {
+              "target": "Package",
+              "version": "[9.1.0, )"
+            },
+            "itext7.bouncy-castle-adapter": {
               "target": "Package",
               "version": "[9.1.0, )"
             }

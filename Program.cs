@@ -1,3 +1,5 @@
+using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
+using Hangfire;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -7,14 +9,33 @@ using Microsoft.OpenApi.Models;
 using OfficeOpenXml;
 using StudentFeeManagement.Data;
 using StudentFeeManagement.Service;
+using System.Data.Common;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
 
-builder.Services.AddSignalR(); 
+builder.Services.AddSignalR();
 
-// Swagger Setup
+// Add Hangfire with the correct connection string
+builder.Services.AddHangfire(config =>
+{
+    var connectionString = builder.Configuration.GetConnectionString("DbConnection");
+    config
+        .UseSimpleAssemblyNameTypeSerializer()
+        .UseRecommendedSerializerSettings()
+        .UseSqlServerStorage(connectionString);
+});
+
+// Add Hangfire server to process background jobs
+builder.Services.AddHangfireServer();
+
+builder.Services.AddHangfireServer();
+builder.Services.AddScoped<RestoreService>();  // Register RestoreService
+
+builder.Services.AddScoped<DatabaseHealthCheckService>(); //
+builder.Services.AddScoped<DataBackupService>();
+
 builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new OpenApiInfo
@@ -128,7 +149,7 @@ using (var scope = app.Services.CreateScope())
     }
 
     // Assign CEO Role to a Specific User
-    string ceoEmail = "ceo@example.com"; // Change to your CEO's email
+    string ceoEmail = "buildmybusinessu1@gmail.com"; // Change to your CEO's email
     var ceoUser = await userManager.FindByEmailAsync(ceoEmail);
 
     if (ceoUser == null)
@@ -139,7 +160,7 @@ using (var scope = app.Services.CreateScope())
             Email = ceoEmail,
             EmailConfirmed = true
         };
-        await userManager.CreateAsync(ceoUser, "Ceo@1234"); // Set a strong password
+        await userManager.CreateAsync(ceoUser, "Unit1@1234"); // Set a strong password
     }
 
     if (!await userManager.IsInRoleAsync(ceoUser, ceoRole))
@@ -147,5 +168,18 @@ using (var scope = app.Services.CreateScope())
         await userManager.AddToRoleAsync(ceoUser, ceoRole);
     }
 }
+app.UseHangfireDashboard("/hangfire");
+
+RecurringJob.AddOrUpdate<DataBackupService>(
+    "backup-all-data",                        // Unique job id
+    service => service.BackupAllAsync(),       // Method to call
+    Cron.HourInterval(8)                      // Cron expression for every 8 hours
+);
+
+RecurringJob.AddOrUpdate<DatabaseHealthCheckService>(
+    "database-health-check",
+    x => x.CheckAndRecoverAsync(),
+    Cron.Hourly   // Check every 1 hour
+);
 
 app.Run();

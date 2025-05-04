@@ -19,6 +19,16 @@ namespace StudentFeeManagement.Data
         public DbSet<AuditLog> AuditLogs { get; set; }
         public DbSet<StudentFeeEditRequest> StudentFeeEditRequests { get; set; }
         public DbSet<Student> Students { get; set; }
+        public DbSet<EnrollmentDetail> StudentEnrollments { get; set; }
+        public DbSet<StudentProfile> StudentProfiles { get; set; }
+        public DbSet<StudentBackup> StudentBackups { get; set; }
+        public DbSet<StudentFeeBackup> StudentFeeBackups { get; set; }
+        public DbSet<DeleteRequestBackup> DeleteRequestBackups { get; set; }
+        public DbSet<AuditLogBackup> AuditLogBackups { get; set; }
+
+        public DbSet<JobAudit> JobAudits { get; set; }
+
+        public DbSet<DeleteRequest> DeleteRequests { get; set; }
         public async Task<StudentFeeSummary> GetStudentFeeSummaryAsync()
         {
             return new StudentFeeSummary
@@ -40,10 +50,14 @@ namespace StudentFeeManagement.Data
                 TotalSecondTermAmountPaid = await StudentFees.SumAsync(f => (decimal?)f.SecondTermAmountPaid) ?? 0,
                 TotalSecondTermDue = await StudentFees.SumAsync(f => (decimal?)(f.SecondTermFee - f.SecondTermAmountPaid)) ?? 0,
 
-                TotalAnnualFees = await StudentFees.SumAsync(f => (decimal?)(f.AdmissionFee + f.FirstTermFee + f.SecondTermFee)) ?? 0,
-                TotalDues = await StudentFees.SumAsync(f => (decimal?)(f.AdmissionFee - f.AdmissionAmountPaid +
-                                                                      f.FirstTermFee - f.FirstTermAmountPaid +
-                                                                      f.SecondTermFee - f.SecondTermAmountPaid)) ?? 0,
+                TotalAnnualFees = await StudentFees.SumAsync(f =>
+     (decimal?)((f.AdmissionFee ?? 0) + (f.FirstTermFee ?? 0) + (f.SecondTermFee ?? 0))) ?? 0,
+
+                TotalDues = await StudentFees.SumAsync(f =>
+                    (decimal?)((f.AdmissionFee ?? 0) - (f.AdmissionAmountPaid ?? 0) +
+                               (f.FirstTermFee ?? 0) - (f.FirstTermAmountPaid ?? 0) +
+                               (f.SecondTermFee ?? 0) - (f.SecondTermAmountPaid ?? 0))) ?? 0,
+
 
                 TotalConcession = await StudentFees.SumAsync(f => (decimal?)f.Concession) ?? 0,
 
@@ -107,11 +121,13 @@ namespace StudentFeeManagement.Data
                 .Property(f => f.Concession)
                 .HasColumnType("decimal(18,2)");
 
-
-
-
         }
-        
-    }
+
+           
+
+
+    
+
+}
 }
 

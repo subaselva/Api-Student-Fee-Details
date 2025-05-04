@@ -1,0 +1,1781 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Auth Demo",
+    "version": "v1"
+  },
+  "paths": {
+    "/api/Audit/GetAuditLogs": {
+      "get": {
+        "tags": [
+          "Audit"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Backup/run": {
+      "post": {
+        "tags": [
+          "Backup"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/EnrollmentDetail/all": {
+      "get": {
+        "tags": [
+          "EnrollmentDetail"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/EnrollmentDetail/get/{id}": {
+      "get": {
+        "tags": [
+          "EnrollmentDetail"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/EnrollmentDetail/edit/{id}": {
+      "put": {
+        "tags": [
+          "EnrollmentDetail"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EnrollmentDetail"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EnrollmentDetail"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/EnrollmentDetail"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/EnrollmentDetail/delete/{id}": {
+      "delete": {
+        "tags": [
+          "EnrollmentDetail"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Export/export/excel": {
+      "get": {
+        "tags": [
+          "Export"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Login": {
+      "post": {
+        "tags": [
+          "Login"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginModel"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginModel"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginModel"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Register": {
+      "post": {
+        "tags": [
+          "Register"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterModel"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterModel"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterModel"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Restore/restore-database": {
+      "post": {
+        "tags": [
+          "Restore"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Role": {
+      "get": {
+        "tags": [
+          "Role"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Role"
+        ],
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Role/GetAllUsers": {
+      "get": {
+        "tags": [
+          "Role"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Role/AddUserToRole": {
+      "post": {
+        "tags": [
+          "Role"
+        ],
+        "parameters": [
+          {
+            "name": "email",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "roleName",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Role/GetUserRoles": {
+      "get": {
+        "tags": [
+          "Role"
+        ],
+        "parameters": [
+          {
+            "name": "email",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Role/RemoveUserFromRole": {
+      "post": {
+        "tags": [
+          "Role"
+        ],
+        "parameters": [
+          {
+            "name": "email",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "roleName",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/students/full/add": {
+      "post": {
+        "tags": [
+          "Student"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FullStudentInfo"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FullStudentInfo"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/FullStudentInfo"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/students/{id}": {
+      "put": {
+        "tags": [
+          "Student"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FullStudentInfo"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FullStudentInfo"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/FullStudentInfo"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/students/admin/delete/{id}": {
+      "delete": {
+        "tags": [
+          "Student"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/students/fullview/{id}": {
+      "get": {
+        "tags": [
+          "Student"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/students/fullview": {
+      "get": {
+        "tags": [
+          "Student"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/students/view-only": {
+      "get": {
+        "tags": [
+          "Student"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/students/view-only/{id}": {
+      "get": {
+        "tags": [
+          "Student"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/students/export/excel": {
+      "get": {
+        "tags": [
+          "Student"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/StudentFees/GetFeesByDate": {
+      "get": {
+        "tags": [
+          "StudentFees"
+        ],
+        "parameters": [
+          {
+            "name": "selectedDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/StudentFees": {
+      "get": {
+        "tags": [
+          "StudentFees"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/StudentFee"
+                  }
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/StudentFee"
+                  }
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/StudentFee"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "StudentFees"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StudentFee"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StudentFee"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/StudentFee"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/StudentFees/{id}": {
+      "get": {
+        "tags": [
+          "StudentFees"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/StudentFee"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StudentFee"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StudentFee"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "StudentFees"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StudentFee"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StudentFee"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/StudentFee"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "StudentFees"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/StudentFees/pending-edits": {
+      "get": {
+        "tags": [
+          "StudentFees"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/StudentFees/edit-request": {
+      "put": {
+        "tags": [
+          "StudentFees"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StudentFeeEditRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StudentFeeEditRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/StudentFeeEditRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/StudentFees/approve-edit/{id}": {
+      "post": {
+        "tags": [
+          "StudentFees"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/StudentFees/reject-edit/{id}": {
+      "post": {
+        "tags": [
+          "StudentFees"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/StudentFees/Summary": {
+      "get": {
+        "tags": [
+          "StudentFees"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/StudentFees/debug-user": {
+      "get": {
+        "tags": [
+          "StudentFees"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/StudentFees/DeleteRequest": {
+      "post": {
+        "tags": [
+          "StudentFees"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteRequestDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteRequestDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/StudentFees/ApproveDelete/{requestId}": {
+      "delete": {
+        "tags": [
+          "StudentFees"
+        ],
+        "parameters": [
+          {
+            "name": "requestId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/StudentFees/RejectDelete/{requestId}": {
+      "delete": {
+        "tags": [
+          "StudentFees"
+        ],
+        "parameters": [
+          {
+            "name": "requestId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/StudentFees/DeleteRequests": {
+      "get": {
+        "tags": [
+          "StudentFees"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/StudentProfile/all": {
+      "get": {
+        "tags": [
+          "StudentProfile"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/StudentProfile/get/{id}": {
+      "get": {
+        "tags": [
+          "StudentProfile"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/StudentProfile/edit/{id}": {
+      "put": {
+        "tags": [
+          "StudentProfile"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StudentProfile"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StudentProfile"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/StudentProfile"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/StudentProfile/delete/{id}": {
+      "delete": {
+        "tags": [
+          "StudentProfile"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Students/edit/{id}": {
+      "put": {
+        "tags": [
+          "Students"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Student"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Student"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Student"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Students/delete/{id}": {
+      "delete": {
+        "tags": [
+          "Students"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Students/all": {
+      "get": {
+        "tags": [
+          "Students"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Students/get/{id}": {
+      "get": {
+        "tags": [
+          "Students"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "DeleteRequestDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "studentFeeId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "studentName": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "EnrollmentDetail": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "studentId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "admissionNumber": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "admissionDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "classRollNo": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "mediumOfInstruction": {
+            "type": "string",
+            "nullable": true
+          },
+          "languagesGroupStudied": {
+            "type": "string",
+            "nullable": true
+          },
+          "academicGroupStudied": {
+            "type": "string",
+            "nullable": true
+          },
+          "subjectsGroupStudied": {
+            "type": "string",
+            "nullable": true
+          },
+          "previousAcademicYear": {
+            "type": "string",
+            "nullable": true
+          },
+          "statusPreviousYear": {
+            "type": "string",
+            "nullable": true
+          },
+          "admitted": {
+            "type": "string",
+            "nullable": true
+          },
+          "previousClass": {
+            "type": "string",
+            "nullable": true
+          },
+          "marks": {
+            "type": "string",
+            "nullable": true
+          },
+          "previousAttendance": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "FullStudentInfo": {
+        "type": "object",
+        "properties": {
+          "student": {
+            "$ref": "#/components/schemas/Student"
+          }
+        },
+        "additionalProperties": false
+      },
+      "LoginModel": {
+        "required": [
+          "email",
+          "password"
+        ],
+        "type": "object",
+        "properties": {
+          "email": {
+            "minLength": 1,
+            "type": "string",
+            "format": "email"
+          },
+          "password": {
+            "minLength": 1,
+            "type": "string",
+            "format": "password"
+          }
+        },
+        "additionalProperties": false
+      },
+      "RegisterModel": {
+        "required": [
+          "email",
+          "password"
+        ],
+        "type": "object",
+        "properties": {
+          "email": {
+            "minLength": 1,
+            "type": "string",
+            "format": "email"
+          },
+          "password": {
+            "maxLength": 100,
+            "minLength": 6,
+            "type": "string",
+            "format": "password"
+          },
+          "confirmPassword": {
+            "type": "string",
+            "format": "password",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Student": {
+        "required": [
+          "alternateMobileNumber",
+          "email",
+          "mobileNumber",
+          "name",
+          "rollNumber"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "rollNumber": {
+            "maxLength": 20,
+            "minLength": 1,
+            "type": "string"
+          },
+          "name": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "gender": {
+            "type": "string",
+            "nullable": true
+          },
+          "dateOfBirth": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "permanentEducationNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "motherName": {
+            "type": "string",
+            "nullable": true
+          },
+          "fatherName": {
+            "type": "string",
+            "nullable": true
+          },
+          "guardianName": {
+            "type": "string",
+            "nullable": true
+          },
+          "aadharNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "nameOnAadhar": {
+            "type": "string",
+            "nullable": true
+          },
+          "address": {
+            "type": "string",
+            "nullable": true
+          },
+          "pincode": {
+            "type": "string",
+            "nullable": true
+          },
+          "mobileNumber": {
+            "minLength": 1,
+            "pattern": "^\\d{10}$",
+            "type": "string"
+          },
+          "alternateMobileNumber": {
+            "minLength": 1,
+            "pattern": "^\\d{10}$",
+            "type": "string"
+          },
+          "email": {
+            "minLength": 1,
+            "type": "string",
+            "format": "email"
+          },
+          "motherTongue": {
+            "type": "string",
+            "nullable": true
+          },
+          "socialCategory": {
+            "type": "string",
+            "nullable": true
+          },
+          "minorityGroup": {
+            "type": "string",
+            "nullable": true
+          },
+          "isBPLBeneficiary": {
+            "type": "string",
+            "nullable": true
+          },
+          "isAAYBeneficiary": {
+            "type": "string",
+            "nullable": true
+          },
+          "isEWS": {
+            "type": "string",
+            "nullable": true
+          },
+          "isCWSN": {
+            "type": "string",
+            "nullable": true
+          },
+          "typeOfImpairment": {
+            "type": "string",
+            "nullable": true
+          },
+          "isIndian": {
+            "type": "string",
+            "nullable": true
+          },
+          "isOutOfSchool": {
+            "type": "string",
+            "nullable": true
+          },
+          "hasDisabilityCertificate": {
+            "type": "string",
+            "nullable": true
+          },
+          "disabilityPercentage": {
+            "type": "number",
+            "format": "double"
+          },
+          "bloodGroup": {
+            "type": "string",
+            "nullable": true
+          },
+          "enrollment": {
+            "$ref": "#/components/schemas/EnrollmentDetail"
+          },
+          "profile": {
+            "$ref": "#/components/schemas/StudentProfile"
+          }
+        },
+        "additionalProperties": false
+      },
+      "StudentFee": {
+        "required": [
+          "studentName",
+          "whatsAppNumber"
+        ],
+        "type": "object",
+        "properties": {
+          "registrationNumber": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "studentName": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "isNewStudent": {
+            "type": "string",
+            "nullable": true
+          },
+          "classSection": {
+            "type": "string",
+            "nullable": true
+          },
+          "admissionFee": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "admissionAmountPaid": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "admissionDue": {
+            "type": "number",
+            "format": "double",
+            "nullable": true,
+            "readOnly": true
+          },
+          "admissionBillNo": {
+            "type": "string",
+            "nullable": true
+          },
+          "admissionDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "firstTermFee": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "firstTermAmountPaid": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "firstTermDue": {
+            "type": "number",
+            "format": "double",
+            "nullable": true,
+            "readOnly": true
+          },
+          "firstTermBillNo": {
+            "type": "string",
+            "nullable": true
+          },
+          "firstTermDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "secondTermFee": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "secondTermAmountPaid": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "secondTermDue": {
+            "type": "number",
+            "format": "double",
+            "nullable": true,
+            "readOnly": true
+          },
+          "secondTermBillNo": {
+            "type": "string",
+            "nullable": true
+          },
+          "secondTermDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "annualFees": {
+            "type": "number",
+            "format": "double",
+            "nullable": true,
+            "readOnly": true
+          },
+          "dues": {
+            "type": "number",
+            "format": "double",
+            "nullable": true,
+            "readOnly": true
+          },
+          "concession": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "remarks": {
+            "type": "string",
+            "nullable": true
+          },
+          "busFirstTermFee": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "busFirstTermAmountPaid": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "busFirstTermDue": {
+            "type": "number",
+            "format": "double",
+            "nullable": true,
+            "readOnly": true
+          },
+          "busSecondTermFee": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "busSecondTermAmountPaid": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "busSecondTermDue": {
+            "type": "number",
+            "format": "double",
+            "nullable": true,
+            "readOnly": true
+          },
+          "busPoint": {
+            "type": "string",
+            "nullable": true
+          },
+          "whatsAppNumber": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "StudentFeeEditRequest": {
+        "required": [
+          "registrationNumber",
+          "requestDate"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "registrationNumber": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "updatedStudentName": {
+            "type": "string",
+            "nullable": true
+          },
+          "updatedIsNewStudent": {
+            "type": "string",
+            "nullable": true
+          },
+          "updatedClassSection": {
+            "type": "string",
+            "nullable": true
+          },
+          "updatedAdmissionFee": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "updatedAdmissionAmountPaid": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "updatedAdmissionBillNo": {
+            "type": "string",
+            "nullable": true
+          },
+          "updatedAdmissionDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "updatedFirstTermFee": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "updatedFirstTermAmountPaid": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "updatedFirstTermBillNo": {
+            "type": "string",
+            "nullable": true
+          },
+          "updatedFirstTermDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "updatedSecondTermFee": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "updatedSecondTermAmountPaid": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "updatedSecondTermBillNo": {
+            "type": "string",
+            "nullable": true
+          },
+          "updatedSecondTermDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "updatedConcession": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "updatedRemarks": {
+            "type": "string",
+            "nullable": true
+          },
+          "updatedBusFirstTermFee": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "updatedBusFirstTermAmountPaid": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "updatedBusSecondTermFee": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "updatedBusSecondTermAmountPaid": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "updatedBusPoint": {
+            "type": "string",
+            "nullable": true
+          },
+          "updatedWhatsAppNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "nullable": true
+          },
+          "requestDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "approvedDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "approvedBy": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "StudentProfile": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "studentId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "studentName": {
+            "type": "string",
+            "nullable": true
+          },
+          "facilitiesProvided": {
+            "type": "string",
+            "nullable": true
+          },
+          "isCWSN": {
+            "type": "string",
+            "nullable": true
+          },
+          "isSLD": {
+            "type": "string",
+            "nullable": true
+          },
+          "sldType": {
+            "type": "string",
+            "nullable": true
+          },
+          "isASD": {
+            "type": "string",
+            "nullable": true
+          },
+          "isADHD": {
+            "type": "string",
+            "nullable": true
+          },
+          "isGifted": {
+            "type": "string",
+            "nullable": true
+          },
+          "isInStateCompetition": {
+            "type": "string",
+            "nullable": true
+          },
+          "isInNCC_NSS": {
+            "type": "string",
+            "nullable": true
+          },
+          "isInUseInternet": {
+            "type": "string",
+            "nullable": true
+          },
+          "height": {
+            "type": "string",
+            "nullable": true
+          },
+          "weight": {
+            "type": "string",
+            "nullable": true
+          },
+          "residencetoschool": {
+            "type": "string",
+            "nullable": true
+          },
+          "educationinfamily": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "securitySchemes": {
+      "Bearer": {
+        "type": "http",
+        "description": "Please Enter a Token ",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  },
+  "security": [
+    {
+      "Bearer": [ ]
+    }
+  ]
+}

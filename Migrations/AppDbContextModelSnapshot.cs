@@ -252,6 +252,169 @@ namespace StudentFeeManagement.Migrations
                     b.ToTable("AuditLogs");
                 });
 
+            modelBuilder.Entity("StudentFeeManagement.Model.AuditLogBackup", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ActionType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("BackupDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("FullBackupJson")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AuditLogBackups");
+                });
+
+            modelBuilder.Entity("StudentFeeManagement.Model.DeleteRequest", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Approved")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("RequestedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("RequestedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("StudentFeeId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("StudentName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("DeleteRequests");
+                });
+
+            modelBuilder.Entity("StudentFeeManagement.Model.DeleteRequestBackup", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("BackupDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("FullBackupJson")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RequestId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("DeleteRequestBackups");
+                });
+
+            modelBuilder.Entity("StudentFeeManagement.Model.EnrollmentDetail", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AcademicGroupStudied")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("AdmissionDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("AdmissionNumber")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Admitted")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ClassRollNo")
+                        .HasColumnType("int");
+
+                    b.Property<string>("LanguagesGroupStudied")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Marks")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MediumOfInstruction")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PreviousAcademicYear")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PreviousAttendance")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PreviousClass")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("StatusPreviousYear")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("StudentId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SubjectsGroupStudied")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("StudentId")
+                        .IsUnique();
+
+                    b.ToTable("StudentEnrollments");
+                });
+
+            modelBuilder.Entity("StudentFeeManagement.Model.JobAudit", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Details")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("ExecutedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("JobName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("JobAudits");
+                });
+
             modelBuilder.Entity("StudentFeeManagement.Model.Student", b =>
                 {
                     b.Property<int>("Id")
@@ -276,7 +439,7 @@ namespace StudentFeeManagement.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("DateOfBirth")
+                    b.Property<DateTime>("DateOfBirth")
                         .HasColumnType("datetime2");
 
                     b.Property<decimal>("DisabilityPercentage")
@@ -326,9 +489,6 @@ namespace StudentFeeManagement.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("MainstreamDate")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("MinorityGroup")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -377,6 +537,30 @@ namespace StudentFeeManagement.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Students");
+                });
+
+            modelBuilder.Entity("StudentFeeManagement.Model.StudentBackup", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("BackupDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("FullBackupJson")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RollNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("StudentBackups");
                 });
 
             modelBuilder.Entity("StudentFeeManagement.Model.StudentFee", b =>
@@ -461,6 +645,30 @@ namespace StudentFeeManagement.Migrations
                     b.HasKey("RegistrationNumber");
 
                     b.ToTable("StudentFees");
+                });
+
+            modelBuilder.Entity("StudentFeeManagement.Model.StudentFeeBackup", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("BackupDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("FullBackupJson")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RollNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("StudentFeeBackups");
                 });
 
             modelBuilder.Entity("StudentFeeManagement.Model.StudentFeeEditRequest", b =>
@@ -561,6 +769,71 @@ namespace StudentFeeManagement.Migrations
                     b.ToTable("StudentFeeEditRequests");
                 });
 
+            modelBuilder.Entity("StudentFeeManagement.Model.StudentProfile", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Educationinfamily")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FacilitiesProvided")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Height")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("IsADHD")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("IsASD")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("IsCWSN")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("IsGifted")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("IsInNCC_NSS")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("IsInStateCompetition")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("IsInUseInternet")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("IsSLD")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Residencetoschool")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SLDType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("StudentId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("StudentName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Weight")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("StudentId")
+                        .IsUnique();
+
+                    b.ToTable("StudentProfiles");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -609,6 +882,33 @@ namespace StudentFeeManagement.Migrations
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("StudentFeeManagement.Model.EnrollmentDetail", b =>
+                {
+                    b.HasOne("StudentFeeManagement.Model.Student", null)
+                        .WithOne("Enrollment")
+                        .HasForeignKey("StudentFeeManagement.Model.EnrollmentDetail", "StudentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("StudentFeeManagement.Model.StudentProfile", b =>
+                {
+                    b.HasOne("StudentFeeManagement.Model.Student", null)
+                        .WithOne("Profile")
+                        .HasForeignKey("StudentFeeManagement.Model.StudentProfile", "StudentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("StudentFeeManagement.Model.Student", b =>
+                {
+                    b.Navigation("Enrollment")
+                        .IsRequired();
+
+                    b.Navigation("Profile")
                         .IsRequired();
                 });
 #pragma warning restore 612, 618

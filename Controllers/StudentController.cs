@@ -3,14 +3,16 @@ using Microsoft.AspNetCore.Mvc;
 using OfficeOpenXml; // For Excel Export
 using iText.Kernel.Pdf; // Using iText7
 using iText.Layout;
+using iText.Layout.Properties;
 using iText.Layout.Element;
-using System.Collections.Generic;
-using System.IO;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using StudentFeeManagement.Service;
 using StudentFeeManagement.Data;
 using StudentFeeManagement.Model;
+using IronXL;
+using ClosedXML.Excel;
+using iText.IO.Font.Constants;
+using iText.Kernel.Font;
 namespace StudentFeeManagement.Controllers
 {
    
@@ -21,37 +23,111 @@ namespace StudentFeeManagement.Controllers
     {
         private readonly StudentService _studentService;
         private readonly AppDbContext _context;
+        private readonly AuditService _auditService;
 
-        public StudentController(AppDbContext context, StudentService studentService)
+        public StudentController(AppDbContext context, StudentService studentService, AuditService auditService)
         {
             _context = context;
             _studentService = studentService;
+            _auditService = auditService;
         }
 
-        // 🔹 Admin - Add Student
-        [HttpPost("admin/add")]
-        public async Task<IActionResult> AddStudent([FromBody] Student student)
+
+        [HttpPost("full/add")]
+        public async Task<IActionResult> AddFullStudent([FromBody] FullStudentInfo full)
         {
-            var addedStudent = await _studentService.AddStudent(student);
-            return Ok(addedStudent);
+            if (full?.Student == null)
+                return BadRequest("Invalid student data");
+
+            _context.Students.Add(full.Student);
+            await _context.SaveChangesAsync();
+           
+            // ✅ Log creation
+            await _auditService.LogAsync("Create", "Student", full.Student);
+
+            // 🛡️ Audit log for creating a new student
+
+            return Ok(full.Student);
         }
 
-        // 🔹 Admin - Edit Student
-        [HttpPut("admin/edit/{id}")]
-        public async Task<IActionResult> EditStudent(int id, [FromBody] Student student)
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateFullStudent(int id, [FromBody] FullStudentInfo fullInfo)
         {
-            var updatedStudent = await _studentService.EditStudent(id, student);
-            return updatedStudent == null ? NotFound() : Ok(updatedStudent);
+            if (fullInfo?.Student == null) return BadRequest("Invalid data");
+
+            var existingStudent = await _context.Students
+                .Include(s => s.Enrollment)
+                .Include(s => s.Profile)
+                .FirstOrDefaultAsync(s => s.Id == id);
+
+            if (existingStudent == null) return NotFound("Student not found");
+
+            // Update student (exclude ID)
+            fullInfo.Student.Id = id; // ensure it matches
+            _context.Entry(existingStudent).CurrentValues.SetValues(fullInfo.Student);
+
+            // Update enrollment if exists
+            if (existingStudent.Enrollment != null && fullInfo.Student.Enrollment != null)
+            {
+                fullInfo.Student.Enrollment.Id = existingStudent.Enrollment.Id; // keep original ID
+                fullInfo.Student.Enrollment.StudentId = id;
+                _context.Entry(existingStudent.Enrollment).CurrentValues.SetValues(fullInfo.Student.Enrollment);
+            }
+
+            // Update profile if exists
+            if (existingStudent.Profile != null && fullInfo.Student.Profile != null)
+            {
+                fullInfo.Student.Profile.Id = existingStudent.Profile.Id; // keep original ID
+                fullInfo.Student.Profile.StudentId = id;
+                _context.Entry(existingStudent.Profile).CurrentValues.SetValues(fullInfo.Student.Profile);
+            }
+
+            await _context.SaveChangesAsync();
+
+            await _auditService.LogAsync("Update", "Student", new
+            {
+                Student = fullInfo.Student,
+                Enrollment = fullInfo.Student.Enrollment,
+                Profile = fullInfo.Student.Profile
+            });
+
+            return Ok("Updated successfully");
         }
+
         // 🔹 Admin - Delete Student
         [HttpDelete("admin/delete/{id}")]
         public async Task<IActionResult> DeleteStudent(int id)
         {
+            
+            var studentToDelete = await _studentService.GetStudentById(id);
             var isDeleted = await _studentService.DeleteStudent(id);
+            if (isDeleted && studentToDelete != null)
+                await _auditService.LogAsync("Delete", "Students", studentToDelete);
             return isDeleted ? Ok(new { message = "Student deleted successfully" }) : NotFound(new { message = "Student not found" });
         }
 
-        // 🔹 View-Only Student List
+        // GET full student view by ID
+        [HttpGet("fullview/{id}")]
+        public async Task<IActionResult> GetFullStudentInfo(int id)
+        {
+            var fullInfo = await _studentService.GetFullStudentDetails(id);
+            if (fullInfo == null) return NotFound();
+            return Ok(fullInfo);
+        }
+
+        [HttpGet("fullview")]
+        public async Task<IActionResult> GetAllStudentInfo()
+        {
+            var fullInfo = await _studentService.GetAllStudentDetailsAsync();
+
+            if (fullInfo == null || !fullInfo.Any())
+                return NotFound("No student data found.");
+
+            return Ok(fullInfo);  // Return all student details including Enrollment and Profile
+        }
+
+
         [HttpGet("view-only")]
         public async Task<IActionResult> GetStudents()
         {
@@ -59,58 +135,61 @@ namespace StudentFeeManagement.Controllers
             return Ok(students);
         }
 
+        [HttpGet("view-only/{id}")]
+        public async Task<IActionResult> GetStudent(int id)
+        {
+            var student = await _studentService.GetStudentById(id);
+            return student == null ? NotFound() : Ok(student);
+        }
+
+
+        
+
         [HttpGet("export/excel")]
         public IActionResult ExportToExcel()
         {
-            // Set License Context explicitly in case it's not set
-            ExcelPackage.LicenseContext = OfficeOpenXml.LicenseContext.NonCommercial;
-
-            using var package = new ExcelPackage();
-            var worksheet = package.Workbook.Worksheets.Add("Students");
-
-            // Fetch students from the database
             var students = _context.Students.AsNoTracking().ToList();
-
-            if (students.Count == 0)
-            {
+            if (!students.Any())
                 return BadRequest("No students found to export.");
-            }
 
-            // Load data into Excel sheet
-            worksheet.Cells[1, 1].LoadFromCollection(students, true);
+            var workbook = new XLWorkbook();
+            var sheet = workbook.Worksheets.Add("Students");
 
-            // Save to memory stream
-            var stream = new MemoryStream();
-            package.SaveAs(stream);
-            stream.Position = 0;
+            var props = typeof(Student).GetProperties();
 
-            return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Students.xlsx");
-        }
-
-
-
-
-
-        // 🔹 Export to PDF (Using iText7)
-        [HttpGet("export/pdf")]
-        public IActionResult ExportToPDF()
-        {
-            using var stream = new MemoryStream();
-            using var writer = new PdfWriter(stream);
-            using var pdf = new PdfDocument(writer);
-            var document = new Document(pdf);
-
-            var students = _context.Students.AsNoTracking().ToList();
-            foreach (var student in students)
+            // Headers
+            for (int col = 0; col < props.Length; col++)
             {
-                document.Add(new Paragraph($"Roll No: {student.RollNumber} - Name: {student.Name}"));
+                sheet.Cell(1, col + 1).Value = props[col].Name;
+                sheet.Cell(1, col + 1).Style.Font.Bold = true;
             }
 
-            document.Close();
+            // Rows
+            for (int row = 0; row < students.Count; row++)
+            {
+                var student = students[row];
+                for (int col = 0; col < props.Length; col++)
+                {
+                    var value = props[col].GetValue(student);
+                    sheet.Cell(row + 2, col + 1).Value = value?.ToString() ?? "";
+                }
+            }
+
+            sheet.Columns().AdjustToContents(); // auto fit
+
+            // 🔥 DO NOT use 'using' here
+            var stream = new MemoryStream();
+            workbook.SaveAs(stream);
             stream.Position = 0;
 
-            return File(stream, "application/pdf", "Students.pdf");
+            return File(stream,
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                "Students.xlsx");
         }
+
+
+
+       
     }
 
 }

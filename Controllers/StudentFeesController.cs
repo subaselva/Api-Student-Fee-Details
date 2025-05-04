@@ -17,39 +17,52 @@ public class StudentFeesController : ControllerBase
 {
     private readonly AppDbContext _context;
     private readonly AuditService _auditService;
-   // private readonly IHubContext<NotificationHub> _hubContext;
+    // private readonly IHubContext<NotificationHub> _hubContext;
 
     public StudentFeesController(AppDbContext context, AuditService auditService)
     {
         _context = context;
         _auditService = auditService;
-       // _hubContext = hubContext;
+        // _hubContext = hubContext;
     }
     [HttpGet("GetFeesByDate")]
     public async Task<IActionResult> GetFeesByDate([FromQuery] DateTime selectedDate)
     {
         var fees = await _context.StudentFees
-            .Where(f => EF.Functions.DateDiffDay(f.AdmissionDate, selectedDate) == 0 ||
-                        EF.Functions.DateDiffDay(f.FirstTermDate, selectedDate) == 0 ||
-                        EF.Functions.DateDiffDay(f.SecondTermDate, selectedDate) == 0)
+            .Where(f =>
+                (f.AdmissionDate.HasValue && f.AdmissionDate.Value.Date == selectedDate.Date) ||
+                (f.FirstTermDate.HasValue && f.FirstTermDate.Value.Date == selectedDate.Date) ||
+                (f.SecondTermDate.HasValue && f.SecondTermDate.Value.Date == selectedDate.Date)
+            )
             .Select(f => new
             {
                 f.RegistrationNumber,
                 f.StudentName,
-                AdmissionAmountPaid = EF.Functions.DateDiffDay(f.AdmissionDate, selectedDate) == 0 ? f.AdmissionAmountPaid : null,
-                AdmissionFee = EF.Functions.DateDiffDay(f.AdmissionDate, selectedDate) == 0 ? f.AdmissionFee : null,
-                FirstTermAmountPaid = EF.Functions.DateDiffDay(f.FirstTermDate, selectedDate) == 0 ? f.FirstTermAmountPaid : null,
-                FirstTermFee = EF.Functions.DateDiffDay(f.FirstTermDate, selectedDate) == 0 ? f.FirstTermFee : null,
-                SecondTermAmountPaid = EF.Functions.DateDiffDay(f.SecondTermDate, selectedDate) == 0 ? f.SecondTermAmountPaid : null,
-                SecondTermFee = EF.Functions.DateDiffDay(f.SecondTermDate, selectedDate) == 0 ? f.SecondTermFee : null,
+                AdmissionFee = f.AdmissionFee,
+                AdmissionAmountPaid = f.AdmissionAmountPaid,
+                AdmissionDate = f.AdmissionDate,
+                AdmissionBillNo = f.AdmissionBillNo,
+
+                FirstTermFee = f.FirstTermFee,
+                FirstTermAmountPaid = f.FirstTermAmountPaid,
+                FirstTermDate = f.FirstTermDate,
+                FirstTermBillNo = f.FirstTermBillNo,
+
+                SecondTermFee = f.SecondTermFee,
+                SecondTermAmountPaid = f.SecondTermAmountPaid,
+                SecondTermDate = f.SecondTermDate,
+                SecondTermBillNo = f.SecondTermBillNo
             })
             .ToListAsync();
 
         if (!fees.Any())
-            return NotFound("No fees found for the selected date.");
+        {
+            return NotFound(new { Message = "No fees found for the selected date.", SelectedDate = selectedDate.ToString("yyyy-MM-dd") });
+        }
 
         return Ok(fees);
     }
+
 
 
 
@@ -108,7 +121,7 @@ public class StudentFeesController : ControllerBase
 
                 // Send notification to CEO about pending requests
                 var message = "You have new pending fee edit requests.";
-               // await _hubContext.Clients.All.SendAsync("ReceiveMessage", message);
+                // await _hubContext.Clients.All.SendAsync("ReceiveMessage", message);
 
                 // Save any other changes or processed requests
                 await _context.SaveChangesAsync();
@@ -120,7 +133,7 @@ public class StudentFeesController : ControllerBase
 
 
 
-   
+
     // POST: api/StudentFees
     [HttpPost]
     public async Task<IActionResult> CreateStudentFee([FromBody] StudentFee studentFee)
@@ -191,21 +204,21 @@ public class StudentFeesController : ControllerBase
         await _context.SaveChangesAsync();
 
         // ✅ Log only when there is at least one change
-  //      if (changes.Count > 0)
-   //     {
-            changes["Id"] = request.Id; // Include ID in audit log
+        //      if (changes.Count > 0)
+        //     {
+        changes["Id"] = request.Id; // Include ID in audit log
 
-            await _auditService.LogAction(
-                AuditAction.Updated,
-                "StudentFeeEditRequest",
-                request.RegistrationNumber.ToString(),
-                changes: changes
-            );
-  //      }
-  //      else
- //       {
-   //         return BadRequest("No changes detected.");
-   //     }
+        await _auditService.LogAction(
+            AuditAction.Updated,
+            "StudentFeeEditRequest",
+            request.RegistrationNumber.ToString(),
+            changes: changes
+        );
+        //      }
+        //      else
+        //       {
+        //         return BadRequest("No changes detected.");
+        //     }
 
         return Ok("Edit request submitted successfully.");
     }
@@ -433,5 +446,90 @@ public class StudentFeesController : ControllerBase
         var claims = User.Claims.Select(c => new { c.Type, c.Value }).ToList();
         return Ok(claims);
     }
+
+
+    [HttpPost("DeleteRequest")]
+    public async Task<IActionResult> RequestDeleteStudentFee([FromBody] DeleteRequestDto request)
+    {
+        var studentFee = await _context.StudentFees.FindAsync(request.StudentFeeId);
+        if (studentFee == null || studentFee.StudentName != request.StudentName)
+        {
+            return BadRequest("Student fee record not found or mismatched.");
+        }
+
+        var deleteRequest = new DeleteRequest
+        {
+            StudentFeeId = studentFee.RegistrationNumber,
+            StudentName = studentFee.StudentName,
+            RequestedAt = DateTime.UtcNow,
+            RequestedBy = User.Identity?.Name ?? "Unknown"
+        };
+
+        _context.DeleteRequests.Add(deleteRequest);
+        await _context.SaveChangesAsync();
+
+        return Ok("Delete request submitted for approval.");
+    }
+
+
+    // DELETE: api/StudentFees/ApproveDelete/{requestId}
+    [HttpDelete("ApproveDelete/{requestId}")]
+    
+    public async Task<IActionResult> ApproveDeleteRequest(int requestId)
+    {
+        var deleteRequest = await _context.DeleteRequests.FindAsync(requestId);
+        if (deleteRequest == null || deleteRequest.Approved)
+        {
+            return NotFound("Delete request not found or already processed.");
+        }
+
+        var studentFee = await _context.StudentFees.FindAsync(deleteRequest.StudentFeeId);
+        if (studentFee == null)
+        {
+            return NotFound("Student fee record already deleted.");
+        }
+
+        _context.StudentFees.Remove(studentFee);
+        deleteRequest.Approved = true;
+        await _context.SaveChangesAsync();
+
+        await _auditService.LogAction(
+            AuditAction.Deleted,
+            "StudentFees",
+            studentFee.RegistrationNumber.ToString(),
+            studentFee
+        );
+
+        return NoContent(); // Or Ok("Deletion approved and completed.")
+    }
+
+    [HttpDelete("RejectDelete/{requestId}")]
+    
+    public async Task<IActionResult> RejectDeleteRequest(int requestId)
+    {
+        var deleteRequest = await _context.DeleteRequests.FindAsync(requestId);
+        if (deleteRequest == null || deleteRequest.Approved)
+        {
+            return NotFound("Request not found or already handled.");
+        }
+
+        _context.DeleteRequests.Remove(deleteRequest);
+        await _context.SaveChangesAsync();
+
+        return Ok("Delete request rejected and removed.");
+    }
+
+
+    [HttpGet("DeleteRequests")]
+    
+    public async Task<IActionResult> GetPendingDeleteRequests()
+    {
+        var requests = await _context.DeleteRequests
+            .Where(r => !r.Approved)
+            .ToListAsync();
+
+        return Ok(requests);
+    }
+
 
 }

@@ -2,7 +2,7 @@
 
 namespace StudentFeeManagement.Model
 {
-   
+
     public class Student
     {
         [Key]
@@ -15,8 +15,7 @@ namespace StudentFeeManagement.Model
         [Required]
         public string Name { get; set; }
         public string Gender { get; set; }
-        public DateTime? DateOfBirth { get; set; }
-        public DateTime? MainstreamDate { get; set; }
+        public DateTime DateOfBirth { get; set; }
 
         public string PermanentEducationNumber { get; set; }
         public string MotherName { get; set; }
@@ -49,10 +48,14 @@ namespace StudentFeeManagement.Model
         public string TypeOfImpairment { get; set; }
         public string IsIndian { get; set; }
         public string IsOutOfSchool { get; set; }
-       
+
         public string HasDisabilityCertificate { get; set; }
         public Decimal DisabilityPercentage { get; set; }
         public string BloodGroup { get; set; }
+
+        // Navigation properties
+    public EnrollmentDetail Enrollment { get; set; }
+    public StudentProfile Profile { get; set; }
     }
 
 
