@@ -87,7 +87,6 @@ public class StudentFeesController : ControllerBase
     [HttpGet("pending-edits")]
     public async Task<IActionResult> GetPendingEditRequests()
     {
-        // Fetch pending requests from the database that have some updated fields
         var requests = await _context.StudentFeeEditRequests
                                       .Where(r => r.Status == "Pending" &&
                                                   (r.UpdatedStudentName != null || r.UpdatedIsNewStudent != null ||
@@ -101,35 +100,24 @@ public class StudentFeesController : ControllerBase
                                                    r.UpdatedRemarks != null || r.UpdatedBusFirstTermFee != null ||
                                                    r.UpdatedBusFirstTermAmountPaid != null || r.UpdatedBusSecondTermFee != null ||
                                                    r.UpdatedBusSecondTermAmountPaid != null || r.UpdatedBusPoint != null ||
-                                                   r.UpdatedWhatsAppNumber != null)) // Check for any updates
+                                                   r.UpdatedWhatsAppNumber != null))
                                       .ToListAsync();
 
-        // Iterate through the requests and process them if they have updates
+        // Filter out requests where the original student fee record doesn't exist
+        var validRequests = new List<StudentFeeEditRequest>();
+
         foreach (var request in requests)
         {
-            // Check if the request has already been created by looking for duplicate registrationNumber and status
-            var existingRequest = await _context.StudentFeeEditRequests
-                                                 .Where(r => r.RegistrationNumber == request.RegistrationNumber
-                                                             && r.Status == "Pending"
-                                                             && r.Id != request.Id) // Ensure it's not the same request
-                                                 .FirstOrDefaultAsync();
-
-            if (existingRequest == null)
+            var originalExists = await _context.StudentFees.AnyAsync(f => f.RegistrationNumber == request.RegistrationNumber);
+            if (originalExists)
             {
-                // Process or update the request as needed
-                // For example, you can modify any of the fields here based on business logic or simply leave it for review
-
-                // Send notification to CEO about pending requests
-                var message = "You have new pending fee edit requests.";
-                // await _hubContext.Clients.All.SendAsync("ReceiveMessage", message);
-
-                // Save any other changes or processed requests
-                await _context.SaveChangesAsync();
+                validRequests.Add(request);
             }
         }
 
-        return Ok(requests);
+        return Ok(validRequests);
     }
+
 
 
 
