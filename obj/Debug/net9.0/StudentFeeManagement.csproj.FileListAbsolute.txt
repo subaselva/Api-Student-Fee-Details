@@ -317,10 +317,14 @@ C:\Users\selva\source\project1\StudentFeeManagement\obj\Debug\net9.0\staticwebas
 C:\Users\selva\source\project1\StudentFeeManagement\obj\Debug\net9.0\staticwebassets\msbuild.buildMultiTargeting.StudentFeeManagement.props
 C:\Users\selva\source\project1\StudentFeeManagement\obj\Debug\net9.0\staticwebassets\msbuild.buildTransitive.StudentFeeManagement.props
 C:\Users\selva\source\project1\StudentFeeManagement\obj\Debug\net9.0\staticwebassets.pack.json
-C:\Users\selva\source\project1\StudentFeeManagement\obj\Debug\net9.0\staticwebassets.upToDateCheck.txt
 C:\Users\selva\source\project1\StudentFeeManagement\obj\Debug\net9.0\StudentF.3E15E5A6.Up2Date
 C:\Users\selva\source\project1\StudentFeeManagement\obj\Debug\net9.0\StudentFeeManagement.dll
 C:\Users\selva\source\project1\StudentFeeManagement\obj\Debug\net9.0\refint\StudentFeeManagement.dll
 C:\Users\selva\source\project1\StudentFeeManagement\obj\Debug\net9.0\StudentFeeManagement.pdb
 C:\Users\selva\source\project1\StudentFeeManagement\obj\Debug\net9.0\StudentFeeManagement.genruntimeconfig.cache
 C:\Users\selva\source\project1\StudentFeeManagement\obj\Debug\net9.0\ref\StudentFeeManagement.dll
+C:\Users\selva\source\project1\StudentFeeManagement\obj\Debug\net9.0\staticwebassets.upToDateCheck.txt
+C:\Users\selva\source\project1\StudentFeeManagement\bin\Debug\net9.0\Npgsql.dll
+C:\Users\selva\source\project1\StudentFeeManagement\bin\Debug\net9.0\Npgsql.EntityFrameworkCore.PostgreSQL.dll
+C:\Users\selva\source\project1\StudentFeeManagement\bin\Debug\net9.0\Dapper.dll
+C:\Users\selva\source\project1\StudentFeeManagement\bin\Debug\net9.0\Hangfire.PostgreSql.dll

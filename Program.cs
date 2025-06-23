@@ -1,5 +1,6 @@
 using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
 using Hangfire;
+using Hangfire.PostgreSql;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -24,7 +25,7 @@ builder.Services.AddHangfire(config =>
     config
         .UseSimpleAssemblyNameTypeSerializer()
         .UseRecommendedSerializerSettings()
-        .UseSqlServerStorage(connectionString);
+        .UsePostgreSqlStorage(connectionString);
 });
 
 // Add Hangfire server to process background jobs
@@ -71,7 +72,7 @@ builder.Services.AddHealthChecks();
 // Add services to the container
 builder.Services.AddControllers();
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DbConnection")));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DbConnection")));
 
 builder.Services.AddIdentity<IdentityUser, IdentityRole>()
     .AddEntityFrameworkStores<AppDbContext>()
@@ -112,7 +113,11 @@ builder.Services.AddScoped<StudentService>();
 
 
 var app = builder.Build();
-
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    dbContext.Database.Migrate(); // Applies pending migrations
+}
 // Configure middleware for the HTTP request pipeline
 if (app.Environment.IsDevelopment())
 {
@@ -179,7 +184,7 @@ RecurringJob.AddOrUpdate<DataBackupService>(
 RecurringJob.AddOrUpdate<DatabaseHealthCheckService>(
     "database-health-check",
     x => x.CheckAndRecoverAsync(),
-    Cron.Hourly   // Check every 1 hour
+    Cron.Hourly   // Check every 8 hour
 );
 
 app.Run();
