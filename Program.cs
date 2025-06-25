@@ -138,7 +138,12 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
-
+app.UseStaticFiles(); // Must be before UseRouting()
+app.UseRouting();
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapFallbackToFile("index.html"); // SPA routing
+});
 app.UseHealthChecks("/health");
 // Step 2: Create CEO Role & Assign User
 using (var scope = app.Services.CreateScope())
