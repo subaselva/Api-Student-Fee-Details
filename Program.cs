@@ -7,11 +7,13 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Net.Http.Headers;
 using Microsoft.OpenApi.Models;
+using Npgsql;
 using OfficeOpenXml;
 using StudentFeeManagement.Data;
 using StudentFeeManagement.Service;
 using System.Data.Common;
 using System.Text;
+using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -71,6 +73,10 @@ builder.Services.AddSwaggerGen(options =>
 builder.Services.AddHealthChecks();
 // Add services to the container
 builder.Services.AddControllers();
+
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", false);
+AppContext.SetSwitch("Npgsql.DisableDateTimeInfinityConversions", true);
+
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DbConnection")));
 

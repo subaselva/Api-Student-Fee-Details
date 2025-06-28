@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using StudentFeeManagement.Model;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 
 
@@ -71,11 +72,63 @@ namespace StudentFeeManagement.Data
             };
         }
 
+        public class DateTimeUtcNullableConverter : ValueConverter<DateTime?, DateTime?>
+        {
+            public DateTimeUtcNullableConverter()
+                : base(
+                    v => v.HasValue ? ConvertToUtc(v.Value) : (DateTime?)null,
+                    v => v.HasValue ? ConvertToUtc(v.Value) : (DateTime?)null)
+            {
+            }
 
+            private static DateTime? ConvertToUtc(DateTime value)
+            {
+                if (value.Kind == DateTimeKind.Unspecified)
+                    return new DateTime(value.Ticks, DateTimeKind.Utc);
+                else if (value.Kind == DateTimeKind.Local)
+                    return value.ToUniversalTime();
+                return value;
+            }
+        }
+       
+
+public class DateTimeUtcConverter : ValueConverter<DateTime, DateTime>
+    {
+        public DateTimeUtcConverter()
+            : base(
+                v => ConvertToUtc(v),
+                v => ConvertToUtc(v))
+        {
+        }
+
+        private static DateTime ConvertToUtc(DateTime value)
+        {
+            if (value.Kind == DateTimeKind.Unspecified)
+                return new DateTime(value.Ticks, DateTimeKind.Utc);
+            else if (value.Kind == DateTimeKind.Local)
+                return value.ToUniversalTime();
+            return value;
+        }
+}
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+            {
+                foreach (var property in entityType.GetProperties())
+                {
+                    if (property.ClrType == typeof(DateTime))
+                    {
+                        property.SetValueConverter(new DateTimeUtcConverter());
+                    }
+                    else if (property.ClrType == typeof(DateTime?))
+                    {
+                        property.SetValueConverter(new DateTimeUtcNullableConverter());
+                    }
+                }
+            }
 
             modelBuilder.Entity<StudentFee>()
                 .Property(f => f.AdmissionFee)
@@ -123,11 +176,12 @@ namespace StudentFeeManagement.Data
 
         }
 
-           
+        
+        
 
 
-    
 
-}
+
+    }
 }
 
