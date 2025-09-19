@@ -76,9 +76,23 @@ builder.Services.AddControllers();
 
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", false);
 AppContext.SetSwitch("Npgsql.DisableDateTimeInfinityConversions", true);
+builder.Services.AddDbContextPool<AppDbContext>(options =>
+    options.UseNpgsql(
+        builder.Configuration.GetConnectionString("DbConnection"),
+        npgsqlOptions =>
+        {
+            // Retries for transient failures
+            npgsqlOptions.EnableRetryOnFailure(
+                maxRetryCount: 5,
+                maxRetryDelay: TimeSpan.FromSeconds(10),
+                errorCodesToAdd: null
+            );
+        }
+    )
+);
 
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DbConnection")));
+//builder.Services.AddDbContext<AppDbContext>(options =>
+//    options.UseNpgsql(builder.Configuration.GetConnectionString("DbConnection")));
 
 builder.Services.AddIdentity<IdentityUser, IdentityRole>()
     .AddEntityFrameworkStores<AppDbContext>()
@@ -122,13 +136,15 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    dbContext.Database.Migrate(); // Applies pending migrations
+    
+
 }
 // Configure middleware for the HTTP request pipeline
 if (app.Environment.IsDevelopment())
 {
 
-    //app.UseCors(policy =>
+    //app.UseCors(policy =>Npgsql.NpgsqlException: 'Exception while reading from stream'
+
     //{
     //    policy.WithOrigins("https://localhost:7263")
     //        .AllowAnyMethod()
@@ -162,7 +178,7 @@ using (var scope = app.Services.CreateScope())
     }
 
     // Assign CEO Role to a Specific User
-    string ceoEmail = "buildmybusinessu1@gmail.com"; // Change to your CEO's email
+    string ceoEmail = "studentapp@gmail.com"; // Change to your CEO's email
     var ceoUser = await userManager.FindByEmailAsync(ceoEmail);
 
     if (ceoUser == null)
