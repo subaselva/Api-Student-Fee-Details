@@ -12,8 +12,8 @@ using StudentFeeManagement.Data;
 namespace StudentFeeManagement.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250623154837_Fullfee")]
-    partial class Fullfee
+    [Migration("20250919065623_fee")]
+    partial class fee
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

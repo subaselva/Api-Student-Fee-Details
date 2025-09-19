@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace StudentFeeManagement.Migrations
 {
     /// <inheritdoc />
-    public partial class Fullfee : Migration
+    public partial class fee : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
